@@ -6,7 +6,9 @@ import type { PostEntity } from '../../utils/DB/entities/DBPosts';
 const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
   fastify
 ): Promise<void> => {
-  fastify.get('/', async function (request, reply): Promise<PostEntity[]> {});
+  fastify.get('/', async function (request, reply): Promise<PostEntity[]> {
+    return fastify.db.posts.findMany()
+  });
 
   fastify.get(
     '/:id',
@@ -15,7 +17,9 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
         params: idParamSchema,
       },
     },
-    async function (request, reply): Promise<PostEntity> {}
+    async function (request, reply): Promise<PostEntity | null> {
+      return fastify.db.posts.findOne(request.id)
+    }
   );
 
   fastify.post(
@@ -25,7 +29,9 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
         body: createPostBodySchema,
       },
     },
-    async function (request, reply): Promise<PostEntity> {}
+    async function (request, reply): Promise<PostEntity> {
+      return fastify.db.posts.create(request.body)
+    }
   );
 
   fastify.delete(
@@ -35,7 +41,9 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
         params: idParamSchema,
       },
     },
-    async function (request, reply): Promise<PostEntity> {}
+    async function (request, reply): Promise<PostEntity> {
+      return fastify.db.posts.delete(request.id)
+    }
   );
 
   fastify.patch(
@@ -46,7 +54,9 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
         params: idParamSchema,
       },
     },
-    async function (request, reply): Promise<PostEntity> {}
+    async function (request, reply): Promise<PostEntity> {
+      return fastify.db.posts.change(request.id, request.body)
+    }
   );
 };
 
