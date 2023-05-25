@@ -18,7 +18,9 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
       },
     },
     async function (request, reply): Promise<PostEntity | null> {
-      return fastify.db.posts.findOne(request.id)
+      const res = await this.db.posts.findOne({key:"id", equals:request.params.id})
+
+      return res ?? reply.code(404).send({message:'Not found'})
     }
   );
 
@@ -31,6 +33,7 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
     },
     async function (request, reply): Promise<PostEntity> {
       return fastify.db.posts.create(request.body)
+        .catch((error: Error) => reply.code(400).send({message:error.message || "Bad Request"}))
     }
   );
 
@@ -42,7 +45,8 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
       },
     },
     async function (request, reply): Promise<PostEntity> {
-      return fastify.db.posts.delete(request.id)
+      return fastify.db.posts.delete(request.params.id)
+        .catch((error: Error) => reply.code(400).send({message:'Bad Request'}))
     }
   );
 
@@ -55,7 +59,8 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
       },
     },
     async function (request, reply): Promise<PostEntity> {
-      return fastify.db.posts.change(request.id, request.body)
+      return fastify.db.posts.change(request.params.id, request.body)
+        .catch((error: Error) => reply.code(400).send({message:error.message || "Bad Request"}))
     }
   );
 };

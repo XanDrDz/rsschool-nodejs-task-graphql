@@ -1,14 +1,12 @@
-import { FastifyPluginAsyncJsonSchemaToTs } from '@fastify/type-provider-json-schema-to-ts';
-import { idParamSchema } from '../../utils/reusedSchemas';
-import { changeMemberTypeBodySchema } from './schema';
-import type { MemberTypeEntity } from '../../utils/DB/entities/DBMemberTypes';
+import {FastifyPluginAsyncJsonSchemaToTs} from '@fastify/type-provider-json-schema-to-ts';
+import {idParamSchema} from '../../utils/reusedSchemas';
+import {changeMemberTypeBodySchema} from './schema';
+import type {MemberTypeEntity} from '../../utils/DB/entities/DBMemberTypes';
 
 const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
   fastify
 ): Promise<void> => {
-  fastify.get('/', async function (request, reply): Promise<
-    MemberTypeEntity[]
-  > {
+  fastify.get('/', async function (request, reply): Promise<MemberTypeEntity[]> {
     return fastify.db.memberTypes.findMany()
   });
 
@@ -20,7 +18,9 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
       },
     },
     async function (request, reply): Promise<MemberTypeEntity | null> {
-      return fastify.db.memberTypes.findOne(request.id)
+      const res = fastify.db.memberTypes.findOne({key: "id", equals: request.params.id})
+
+      return res ?? reply.code(404).send({message: 'Not found'})
     }
   );
 
@@ -33,7 +33,9 @@ const plugin: FastifyPluginAsyncJsonSchemaToTs = async (
       },
     },
     async function (request, reply): Promise<MemberTypeEntity> {
-      return fastify.db.memberTypes.change(request.id, request.body)
+      return fastify.db.memberTypes.change(request.params.id, request.body)
+        .catch((error: Error) => reply.code(400)
+          .send({message: error.message ?? "Bad Request"}))
     }
   );
 };
