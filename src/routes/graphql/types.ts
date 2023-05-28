@@ -55,24 +55,24 @@ export const userType: GraphQLObjectType<any, any> = new GraphQLObjectType({
     posts: {
       type: new GraphQLList(new GraphQLNonNull(postType)),
       resolve: async (source: UserEntity, args: unknown, context: context) => {
-        return await context.postsDataLoader.load(source.id)
+        return await context.postsLoader.load(source.id)
       },
     },
     profiles: {
       type: new GraphQLList(new GraphQLNonNull(profileType)),
       resolve: async (source: UserEntity, args: unknown, context: context) => {
-        return await context.profilesDataLoader.load(source.id).catch(() => new Error(`Profile id:${source.id} not found`))
+        return await context.profilesLoader.load(source.id).catch(() => new Error(`Profile id:${source.id} not found`))
       },
     },
     memberType: {
       type: new GraphQLList(new GraphQLNonNull(memberType)),
       resolve: async (source: UserEntity, args: unknown, context: context) => {
 
-        const userProfile = await context.profilesDataLoader.load(source.id) as [ProfileEntity]
+        const userProfile = await context.profilesLoader.load(source.id) as [ProfileEntity]
         if (!userProfile) throw new Error(`Profile with id:${source.id} not found`)
 
 
-        return await context.memberTypesDataLoader.load(userProfile[0].memberTypeId)
+        return await context.memberTypesLoader.load(userProfile[0].memberTypeId)
       },
     },
     subscribedToUser: {

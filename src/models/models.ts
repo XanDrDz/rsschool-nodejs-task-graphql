@@ -3,7 +3,7 @@ import * as dataloader from "dataloader";
 
 export type context = {
   fastify:FastifyInstance;
-  postsDataLoader: dataloader<unknown, unknown, unknown>;
-  profilesDataLoader: dataloader<unknown, unknown, unknown>;
-  memberTypesDataLoader: dataloader<unknown, unknown, unknown>;
+  postsLoader: dataloader<unknown, unknown, unknown>;
+  profilesLoader: dataloader<unknown, unknown, unknown>;
+  memberTypesLoader: dataloader<unknown, unknown, unknown>;
 }
