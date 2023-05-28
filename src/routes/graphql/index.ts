@@ -3,6 +3,7 @@ import {graphqlBodySchema} from './schema';
 import {createDataLoader} from './loader';
 import {GraphQLSchema, graphql} from 'graphql';
 import {queryGeneralType} from './query';
+import {mutationGeneralType} from "./mutation";
 
 const plugin: FastifyPluginAsyncJsonSchemaToTs = async (fastify): Promise<void> => {
   const {postsLoader, profilesLoader, memberTypesLoader} = await createDataLoader(fastify)
