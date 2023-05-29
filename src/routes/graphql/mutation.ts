@@ -5,10 +5,51 @@ import { UserEntity } from '../../utils/DB/entities/DBUsers';
 import { ProfileEntity } from '../../utils/DB/entities/DBProfiles';
 import { PostEntity } from '../../utils/DB/entities/DBPosts';
 import { MemberTypeEntity } from '../../utils/DB/entities/DBMemberTypes';
+import {MemberTypeInputType, PostInputType, ProfileInputType, UserInputType} from "./input-types";
 
 export const mutationGeneralType = new GraphQLObjectType({
   name: 'Mutation',
   fields: () => ({
+    updateUser: {
+      type: userType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        input: { type: new GraphQLNonNull(UserInputType) },
+      },
+      resolve: async (source: unknown, { id, input }: { id: string, input: any }, { fastify }: { fastify: FastifyInstance }) => {
+        return await fastify.db.users.change(id, input);
+      },
+    },
+    updateProfile: {
+      type: profileType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        input: { type: new GraphQLNonNull(ProfileInputType) },
+      },
+      resolve: async (source: unknown, { id, input }: { id: string, input: any }, { fastify }: { fastify: FastifyInstance }) => {
+        return await fastify.db.profiles.change(id, input);
+      },
+    },
+    updatePost: {
+      type: postType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        input: { type: new GraphQLNonNull(PostInputType) },
+      },
+      resolve: async (source: unknown, { id, input }: { id: string, input: any }, { fastify }: { fastify: FastifyInstance }) => {
+        return await fastify.db.posts.change(id, input);
+      },
+    },
+    updateMemberType: {
+      type: memberType,
+      args: {
+        id: { type: new GraphQLNonNull(GraphQLID) },
+        input: { type: new GraphQLNonNull(MemberTypeInputType) },
+      },
+      resolve: async (source: unknown, { id, input }: { id: string, input: any }, { fastify }: { fastify: FastifyInstance }) => {
+        return await fastify.db.memberTypes.change(id, input);
+      },
+    },
     createUser: {
       type: userType,
       args: {
