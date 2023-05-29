@@ -1,10 +1,9 @@
-import { GraphQLNonNull, GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInt } from 'graphql';
+import { GraphQLNonNull, GraphQLObjectType, GraphQLID, GraphQLString } from 'graphql';
 import { FastifyInstance } from 'fastify';
 import { userType, profileType, postType, memberType } from './types';
 import { UserEntity } from '../../utils/DB/entities/DBUsers';
 import { ProfileEntity } from '../../utils/DB/entities/DBProfiles';
 import { PostEntity } from '../../utils/DB/entities/DBPosts';
-import { MemberTypeEntity } from '../../utils/DB/entities/DBMemberTypes';
 import {MemberTypeInputType, PostInputType, ProfileInputType, UserInputType} from "./input-types";
 
 export const mutationGeneralType = new GraphQLObjectType({
@@ -99,21 +98,6 @@ export const mutationGeneralType = new GraphQLObjectType({
       },
       resolve: async (source: unknown, { title, content, userId }: PostEntity, { fastify }: { fastify: FastifyInstance }) => {
         return await fastify.db.posts.create({ title, content, userId });
-      },
-    },
-    createMemberType: {
-      type: memberType,
-      args: {
-        id: { type: new GraphQLNonNull(GraphQLID) },
-        discounts: { type: GraphQLInt },
-        monthPostsLimits: { type: GraphQLInt },
-      },
-      resolve: async (
-        source: unknown,
-        {id, discount, monthPostsLimit }: MemberTypeEntity,
-        { fastify }: { fastify: FastifyInstance }
-      ) => {
-        return await fastify.db.memberTypes.create({id, discount, monthPostsLimit });
       },
     },
   }),
